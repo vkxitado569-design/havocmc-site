@@ -1,0 +1,1081 @@
+[havocmc-loja-1.html](https://github.com/user-attachments/files/27028367/havocmc-loja-1.html)
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HavocMC — Loja Oficial</title>
+<link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@300;400;600;700;900&family=Fira+Code:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ══════════════════════════════════════════════
+   RESET & ROOT
+══════════════════════════════════════════════ */
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --p:#8b2fff;--p2:#6a1fd4;--p3:#b45fff;--p4:#4a0099;
+  --pg:rgba(139,47,255,.2);--pb:rgba(139,47,255,.12);
+  --k:#0a0a0f;--k2:#0d0d18;--k3:#111120;--k4:#181828;--k5:#1e1e30;
+  --t:#ddd8ff;--t2:#9990cc;--t3:#4a4470;
+  --brd:rgba(139,47,255,.18);--brd2:rgba(139,47,255,.35);
+  --green:#22c55e;--gold:#e5c07b;--red:#e06c75;--blue:#61afef;
+}
+html{scroll-behavior:smooth}
+body{background:var(--k);color:var(--t);font-family:'Fira Code',monospace;min-height:100vh;overflow-x:hidden}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:var(--k2)}
+::-webkit-scrollbar-thumb{background:var(--p4);border-radius:3px}
+
+/* ══════════════════════════════════════════════
+   SPLASH SCREEN
+══════════════════════════════════════════════ */
+#splash{
+  position:fixed;inset:0;z-index:9999;
+  background:var(--k);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  transition:opacity .6s ease, transform .6s ease;
+}
+#splash.hide{opacity:0;transform:scale(1.04);pointer-events:none}
+
+.splash-grid{
+  position:absolute;inset:0;pointer-events:none;
+  background-image:
+    linear-gradient(var(--brd) 1px,transparent 1px),
+    linear-gradient(90deg,var(--brd) 1px,transparent 1px);
+  background-size:44px 44px;opacity:.5;
+}
+.splash-glow{
+  position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse 60% 50% at 50% 50%,rgba(139,47,255,.18),transparent 70%);
+}
+
+/* Code block logo */
+.splash-code{
+  position:relative;
+  background:#0d0d1a;
+  border:1px solid var(--p4);
+  border-radius:14px;
+  overflow:hidden;
+  box-shadow:
+    0 0 0 1px rgba(139,47,255,.25),
+    0 0 60px rgba(139,47,255,.2),
+    0 0 120px rgba(139,47,255,.07);
+  width:min(500px,90vw);
+  animation:splashIn .7s cubic-bezier(.23,1.01,.32,1) both;
+}
+@keyframes splashIn{
+  from{opacity:0;transform:translateY(30px) scale(.96)}
+  to{opacity:1;transform:translateY(0) scale(1)}
+}
+
+.splash-bar{
+  background:#130025;border-bottom:1px solid var(--p4);
+  padding:11px 16px;display:flex;align-items:center;gap:8px;
+}
+.dot{width:12px;height:12px;border-radius:50%}
+.dr{background:#ff5f56}.dy{background:#ffbd2e}.dg{background:#27c93f}
+.splash-bar-title{margin:0 auto;font-size:11px;color:#6a3d9a;letter-spacing:.05em}
+
+.splash-body{padding:26px 30px 30px}
+.sl{display:flex;align-items:baseline;margin-bottom:5px;font-size:14px;line-height:1.75;white-space:nowrap}
+.ln{color:#2d1050;font-size:10px;width:24px;flex-shrink:0;margin-right:18px;text-align:right;user-select:none}
+.kw{color:#c678dd;font-weight:700}
+.fn{color:#61afef}
+.cls{color:#e5c07b}
+.str{color:#98c379}
+.num{color:#d19a66}
+.cm{color:#3d2060;font-style:italic}
+.op{color:#8b5cf6}
+.vr{color:#e06c75}
+.pn{color:#5a3d7a}
+.pl{color:#abb2bf}
+
+/* Ghost A */
+.splash-ghost{
+  position:absolute;right:22px;top:50%;transform:translateY(-50%);
+  font-size:100px;font-weight:900;font-family:'Source Code Pro',monospace;
+  color:transparent;-webkit-text-stroke:1.5px rgba(139,47,255,.14);
+  line-height:1;user-select:none;pointer-events:none;
+  animation:ghost-pulse 4s ease-in-out infinite;
+}
+@keyframes ghost-pulse{0%,100%{-webkit-text-stroke-color:rgba(139,47,255,.14)}50%{-webkit-text-stroke-color:rgba(180,80,255,.3)}}
+
+/* Server name below */
+.splash-name{
+  margin-top:22px;
+  font-family:'Source Code Pro',monospace;
+  font-size:28px;font-weight:900;letter-spacing:.25em;text-transform:uppercase;
+  background:linear-gradient(90deg,#7b2fff,#b45fff,#7b2fff);
+  background-size:200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  animation:shimmer 3s linear infinite, splashIn .9s .1s cubic-bezier(.23,1.01,.32,1) both;
+}
+@keyframes shimmer{0%{background-position:0%}100%{background-position:200%}}
+
+.splash-sub{
+  font-size:10px;color:#4a2070;letter-spacing:.4em;text-transform:uppercase;
+  margin-top:6px;animation:splashIn .9s .2s cubic-bezier(.23,1.01,.32,1) both;
+}
+
+/* Progress bar */
+.splash-progress{
+  width:min(300px,70vw);height:2px;background:rgba(139,47,255,.15);
+  border-radius:2px;margin-top:28px;overflow:hidden;
+  animation:splashIn .9s .3s cubic-bezier(.23,1.01,.32,1) both;
+}
+.splash-progress-fill{
+  height:100%;background:linear-gradient(90deg,var(--p),var(--p3));
+  border-radius:2px;width:0%;
+  animation:fill-progress 2.2s .4s ease forwards;
+  box-shadow:0 0 8px var(--p);
+}
+@keyframes fill-progress{to{width:100%}}
+
+.splash-loading{
+  font-size:10px;color:#5a3d7a;letter-spacing:.12em;margin-top:10px;
+  animation:splashIn .9s .4s cubic-bezier(.23,1.01,.32,1) both;
+}
+
+/* Particles */
+.particle{
+  position:fixed;width:2px;height:2px;background:var(--p);
+  border-radius:50%;opacity:0;pointer-events:none;
+  animation:float-up linear infinite;
+}
+@keyframes float-up{
+  0%{opacity:0;transform:translateY(0) scale(1)}
+  10%{opacity:.6}90%{opacity:.2}
+  100%{opacity:0;transform:translateY(-100vh) scale(.5)}
+}
+
+/* ══════════════════════════════════════════════
+   MAIN APP (hidden until splash done)
+══════════════════════════════════════════════ */
+#app{opacity:0;transition:opacity .5s ease}
+#app.show{opacity:1}
+
+/* ── BG CODE RAIN ── */
+.bg-code{
+  position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;opacity:.04;
+  font-family:'Fira Code',monospace;font-size:11px;color:var(--p3);
+  display:flex;flex-wrap:wrap;align-content:flex-start;gap:0;user-select:none;
+}
+
+/* ── NAVBAR ── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  background:rgba(10,10,15,.88);backdrop-filter:blur(18px);
+  border-bottom:1px solid var(--brd);
+  padding:0 2.5rem;height:66px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.logo{
+  font-family:'Source Code Pro',monospace;font-size:1.1rem;font-weight:900;
+  letter-spacing:2px;color:#fff;text-decoration:none;
+  display:flex;align-items:center;gap:.5rem;
+}
+.logo-bracket{color:var(--p);opacity:.7}
+.logo-name{color:#fff}
+.logo-name span{color:var(--p3)}
+.logo-py{
+  font-size:.65rem;color:var(--p);border:1px solid var(--p4);
+  border-radius:4px;padding:.1rem .35rem;letter-spacing:.05em;font-weight:600;
+  background:rgba(139,47,255,.08);
+}
+
+.nav-links{display:flex;gap:2rem;list-style:none}
+.nav-links a{
+  color:var(--t3);text-decoration:none;font-size:.78rem;font-weight:500;
+  letter-spacing:.05em;transition:color .2s;position:relative;
+}
+.nav-links a::before{content:'# ';color:var(--p);opacity:0;transition:opacity .2s}
+.nav-links a:hover{color:var(--p3)}
+.nav-links a:hover::before{opacity:1}
+
+.nav-right{display:flex;align-items:center;gap:.75rem}
+.ip-btn{
+  background:var(--k4);border:1px solid var(--brd);border-radius:6px;
+  padding:.35rem 1rem;font-size:.72rem;color:var(--t2);cursor:pointer;
+  transition:all .2s;display:flex;align-items:center;gap:.45rem;
+  font-family:'Fira Code',monospace;
+}
+.ip-btn:hover{border-color:var(--p3);color:var(--p3)}
+.live{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.nav-discord{
+  background:var(--p);color:#fff;padding:.4rem 1rem;border-radius:6px;
+  text-decoration:none;font-size:.75rem;font-weight:700;transition:all .2s;
+  border:1px solid var(--p3);font-family:'Fira Code',monospace;letter-spacing:.05em;
+}
+.nav-discord:hover{background:var(--p2)}
+
+/* ── HERO ── */
+.hero{
+  min-height:100vh;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;text-align:center;padding:7rem 2rem 4rem;
+  position:relative;overflow:hidden;
+}
+.hero-bg{
+  position:absolute;inset:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 65% 55% at 50% -5%,rgba(139,47,255,.2) 0%,transparent 65%),
+    radial-gradient(ellipse 35% 25% at 80% 85%,rgba(100,33,182,.1) 0%,transparent 55%);
+}
+.hero-grid{
+  position:absolute;inset:0;pointer-events:none;
+  background-image:linear-gradient(var(--brd) 1px,transparent 1px),linear-gradient(90deg,var(--brd) 1px,transparent 1px);
+  background-size:48px 48px;opacity:.07;
+}
+
+/* Typing cursor decoration */
+.hero-tag{
+  display:inline-flex;align-items:center;gap:.5rem;
+  background:rgba(139,47,255,.1);border:1px solid rgba(139,47,255,.28);border-radius:4px;
+  padding:.3rem 1rem;font-size:.7rem;color:var(--p3);letter-spacing:.12em;
+  font-weight:600;margin-bottom:1.5rem;position:relative;font-family:'Fira Code',monospace;
+}
+.hero-tag-comment{color:var(--t3);margin-right:.3rem}
+
+.hero h1{
+  font-family:'Source Code Pro',monospace;font-size:clamp(2.2rem,5.5vw,4.5rem);
+  font-weight:900;line-height:1.05;margin-bottom:1.2rem;letter-spacing:-1px;position:relative;
+}
+.hero h1 .def{color:var(--p);font-weight:400;font-size:.6em}
+.hero h1 .fname{color:var(--blue)}
+.hero h1 .paren{color:var(--t3);font-size:.75em}
+.hero h1 .accent{color:var(--p3)}
+
+.hero-sub{
+  color:var(--t2);font-size:.9rem;max-width:500px;margin:0 auto 2.5rem;
+  line-height:1.8;position:relative;font-size:.88rem;
+}
+.hero-sub .cm-hero{color:var(--t3);font-size:.78rem;display:block;margin-bottom:.5rem}
+
+.hero-btns{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;position:relative}
+.btn-hero{
+  display:inline-flex;align-items:center;gap:.55rem;
+  background:var(--p);color:#fff;padding:.75rem 2rem;border-radius:8px;
+  font-weight:700;text-decoration:none;font-size:.85rem;transition:all .25s;
+  border:1px solid var(--p3);font-family:'Fira Code',monospace;letter-spacing:.05em;
+}
+.btn-hero:hover{background:var(--p2);transform:translateY(-2px);box-shadow:0 8px 30px rgba(139,47,255,.4)}
+.btn-hero-ghost{
+  display:inline-flex;align-items:center;gap:.5rem;
+  background:transparent;color:var(--t2);padding:.75rem 1.5rem;border-radius:8px;
+  font-weight:500;text-decoration:none;font-size:.85rem;transition:all .25s;
+  border:1px solid var(--brd);font-family:'Fira Code',monospace;
+}
+.btn-hero-ghost:hover{border-color:var(--p3);color:var(--p3)}
+
+.hero-scroll{
+  position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:.4rem;
+  color:var(--t3);font-size:.65rem;letter-spacing:.1em;
+}
+.hero-scroll::after{
+  content:'';width:1px;height:36px;
+  background:linear-gradient(var(--p3),transparent);
+  animation:scrollLine 2s ease-in-out infinite;
+}
+@keyframes scrollLine{0%{opacity:0;transform:scaleY(0);transform-origin:top}50%{opacity:1}100%{opacity:0;transform:scaleY(1);transform-origin:top}}
+
+/* ── STATS ── */
+.stats-bar{
+  background:var(--k2);border-top:1px solid var(--brd);border-bottom:1px solid var(--brd);
+  padding:1.6rem 2rem;position:relative;
+}
+.stats-code-label{
+  text-align:center;font-size:.65rem;color:var(--t3);letter-spacing:.1em;
+  margin-bottom:1rem;font-family:'Fira Code',monospace;
+}
+.stats-inner{display:flex;justify-content:center;align-items:center;gap:0;max-width:700px;margin:0 auto}
+.stat{text-align:center;flex:1;padding:0 1.2rem;position:relative}
+.stat+.stat::before{content:'';position:absolute;left:0;top:50%;transform:translateY(-50%);height:36px;width:1px;background:var(--brd)}
+.stat-num{
+  font-family:'Source Code Pro',monospace;font-size:1.6rem;font-weight:900;
+  color:var(--p3);line-height:1;
+}
+.stat-lbl{font-size:.65rem;color:var(--t3);letter-spacing:.12em;margin-top:.35rem;text-transform:uppercase}
+
+/* ── SECTION ── */
+.section{padding:5rem 2rem;max-width:1200px;margin:0 auto;position:relative;z-index:1}
+.s-comment{display:block;text-align:center;font-size:.7rem;color:var(--t3);letter-spacing:.08em;margin-bottom:.4rem;font-style:italic}
+.s-label{display:block;text-align:center;font-size:.68rem;color:var(--p3);letter-spacing:.18em;text-transform:uppercase;font-weight:700;margin-bottom:.5rem}
+.s-title{
+  font-family:'Source Code Pro',monospace;font-size:1.6rem;font-weight:900;
+  text-align:center;margin-bottom:.4rem;line-height:1.2;
+}
+.s-title .def{color:var(--p);font-weight:400;font-size:.7em;display:block;margin-bottom:.1rem}
+.s-sub{text-align:center;color:var(--t2);font-size:.82rem;margin-bottom:3rem;max-width:480px;margin-left:auto;margin-right:auto;line-height:1.75}
+
+/* ── CATEGORIAS ── */
+.cats-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:.8rem}
+@media(max-width:900px){.cats-grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:500px){.cats-grid{grid-template-columns:repeat(2,1fr)}}
+.cat-card{
+  background:var(--k3);border:1px solid var(--brd);border-radius:10px;
+  padding:1.4rem .9rem;text-align:center;cursor:pointer;transition:all .3s;
+  text-decoration:none;color:inherit;display:block;position:relative;overflow:hidden;
+}
+.cat-card::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 80% 60% at 50% 120%,var(--pg),transparent);
+  opacity:0;transition:opacity .3s;
+}
+.cat-card:hover{border-color:var(--brd2);transform:translateY(-4px)}
+.cat-card:hover::before{opacity:1}
+.cat-icon{font-size:1.7rem;margin-bottom:.6rem;display:block}
+.cat-name{font-weight:700;font-size:.82rem;color:#fff;font-family:'Source Code Pro',monospace}
+.cat-desc{font-size:.68rem;color:var(--t3);margin-top:.25rem}
+
+/* ── DIVIDER ── */
+.divider{height:1px;background:var(--brd);margin:0 2rem;position:relative;z-index:1}
+
+/* ── VIP CARDS ── */
+.vips-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+@media(max-width:900px){.vips-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:500px){.vips-grid{grid-template-columns:1fr}}
+
+.vip-card{
+  background:var(--k3);border:1px solid var(--brd);border-radius:12px;
+  overflow:hidden;transition:all .3s;position:relative;display:flex;flex-direction:column;
+}
+.vip-card:hover{border-color:var(--brd2);transform:translateY(-4px);box-shadow:0 16px 40px rgba(0,0,0,.5)}
+.vip-card.popular{border-color:rgba(139,47,255,.45);box-shadow:0 0 0 1px rgba(139,47,255,.18)}
+.vip-glow{position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--p3),transparent);opacity:0;transition:opacity .3s}
+.vip-card:hover .vip-glow,.vip-card.popular .vip-glow{opacity:1}
+
+.pop-badge{
+  position:absolute;top:.8rem;right:.8rem;
+  background:var(--p);color:#fff;font-size:.6rem;font-weight:700;
+  padding:.2rem .6rem;border-radius:4px;letter-spacing:.1em;text-transform:uppercase;
+  font-family:'Fira Code',monospace;
+}
+
+.vip-header{
+  padding:1.8rem 1.3rem 1rem;text-align:center;
+  background:linear-gradient(160deg,rgba(139,47,255,.1),rgba(90,33,182,.04));
+  border-bottom:1px solid var(--brd);
+}
+/* Code-style vip header */
+.vip-class-label{font-size:.62rem;color:var(--t3);margin-bottom:.4rem;font-style:italic}
+.vip-class-def{font-size:.8rem;margin-bottom:.5rem}
+.vip-class-def .kw{color:var(--p);font-weight:700}
+.vip-class-def .cls{color:var(--gold)}
+.vip-emoji{font-size:2rem;display:block;margin-bottom:.5rem}
+.vip-nome{font-family:'Source Code Pro',monospace;font-weight:900;font-size:1rem;color:#fff;letter-spacing:1px}
+.vip-nivel{font-size:.62rem;color:var(--p3);font-weight:600;letter-spacing:.15em;text-transform:uppercase;margin-top:.2rem}
+
+.vip-body{padding:1rem 1.3rem 1.3rem;flex:1;display:flex;flex-direction:column}
+.beneficios{list-style:none;margin-bottom:1.2rem;flex:1}
+.beneficios li{
+  font-size:.77rem;color:var(--t2);padding:.28rem 0;
+  border-bottom:1px solid rgba(255,255,255,.03);
+  display:flex;align-items:center;gap:.5rem;font-family:'Fira Code',monospace;
+}
+.beneficios li:last-child{border-bottom:none}
+.chk{color:var(--p3);font-size:.7rem;flex-shrink:0}
+.b-comment{color:var(--t3);font-size:.68rem;font-style:italic;margin-left:auto}
+
+.preco-area{margin-bottom:.9rem}
+.preco{font-family:'Source Code Pro',monospace;font-size:1.5rem;font-weight:900;color:#fff;line-height:1}
+.preco sup{font-size:.8rem;color:var(--p3)}
+.preco span{font-size:.8rem;color:var(--p3)}
+.preco-periodo{font-size:.68rem;color:var(--t3);margin-top:.25rem}
+.pix-pill{
+  display:inline-flex;align-items:center;gap:.3rem;
+  background:rgba(34,197,94,.07);border:1px solid rgba(34,197,94,.18);
+  color:#4ade80;font-size:.62rem;padding:.15rem .55rem;border-radius:4px;margin-top:.4rem;font-weight:700;
+}
+
+.btn-buy{
+  display:block;width:100%;background:var(--p);color:#fff;border:none;
+  border-radius:8px;padding:.65rem;font-size:.82rem;font-weight:700;cursor:pointer;
+  transition:all .25s;font-family:'Fira Code',monospace;letter-spacing:.05em;
+  border:1px solid transparent;
+}
+.btn-buy:hover{background:var(--p2);box-shadow:0 4px 20px rgba(139,47,255,.4);border-color:var(--p3)}
+.vip-card.popular .btn-buy{background:linear-gradient(135deg,var(--p),var(--p2))}
+
+/* ── INFO CARDS ── */
+.info-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.9rem}
+.info-card{
+  background:var(--k3);border:1px solid var(--brd);border-radius:10px;
+  padding:1.3rem;display:flex;align-items:flex-start;gap:.9rem;transition:border-color .2s;
+}
+.info-card:hover{border-color:var(--brd2)}
+.info-icon-wrap{
+  width:38px;height:38px;border-radius:8px;
+  background:rgba(139,47,255,.1);border:1px solid var(--brd);
+  display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;
+}
+.info-title{font-weight:700;font-size:.83rem;color:#fff;margin-bottom:.25rem;font-family:'Source Code Pro',monospace}
+.info-text{font-size:.74rem;color:var(--t2);line-height:1.65}
+
+/* ── OUTROS PRODUTOS ── */
+.outros-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:.9rem}
+.outro-card{
+  background:var(--k3);border:1px solid var(--brd);border-radius:10px;
+  padding:1.3rem;transition:all .25s;cursor:pointer;position:relative;overflow:hidden;
+}
+.outro-card::after{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--p),transparent);opacity:0;transition:opacity .3s;
+}
+.outro-card:hover{border-color:var(--brd2);transform:translateY(-3px)}
+.outro-card:hover::after{opacity:1}
+.outro-header{display:flex;align-items:center;gap:.7rem;margin-bottom:.8rem}
+.outro-icon{font-size:1.3rem}
+.outro-nome{font-weight:700;font-size:.88rem;color:#fff;font-family:'Source Code Pro',monospace}
+.outro-desc{font-size:.74rem;color:var(--t2);line-height:1.55;margin-bottom:.9rem}
+.outro-preco{font-family:'Source Code Pro',monospace;font-size:1rem;color:var(--p3);font-weight:700}
+.btn-outro{
+  display:block;width:100%;background:transparent;color:var(--p3);
+  border:1px solid var(--brd);border-radius:6px;padding:.5rem;
+  font-size:.75rem;font-weight:700;cursor:pointer;transition:all .2s;
+  font-family:'Fira Code',monospace;margin-top:.7rem;
+}
+.btn-outro:hover{background:rgba(139,47,255,.1);border-color:var(--brd2)}
+
+/* ── FAQ ── */
+.faq-list{max-width:700px;margin:0 auto}
+.faq-item{border:1px solid var(--brd);border-radius:8px;margin-bottom:.6rem;overflow:hidden;transition:border-color .2s}
+.faq-item.open{border-color:var(--brd2)}
+.faq-q{
+  width:100%;background:var(--k3);border:none;color:var(--t);
+  padding:.9rem 1.2rem;text-align:left;cursor:pointer;font-size:.82rem;font-weight:500;
+  font-family:'Fira Code',monospace;display:flex;justify-content:space-between;align-items:center;
+  transition:background .2s;gap:1rem;
+}
+.faq-q::before{content:'>>> ';color:var(--p3);font-size:.7rem;flex-shrink:0}
+.faq-q:hover{background:var(--k4)}
+.faq-arr{color:var(--p3);transition:transform .25s;font-size:.8rem;flex-shrink:0}
+.faq-item.open .faq-arr{transform:rotate(180deg)}
+.faq-a{
+  display:none;padding:.2rem 1.2rem 1rem;font-size:.78rem;color:var(--t2);
+  line-height:1.75;background:var(--k3);border-top:1px solid var(--brd);
+  font-family:'Fira Code',monospace;
+}
+.faq-item.open .faq-a{display:block}
+
+/* ── DISCORD BANNER ── */
+.discord-banner{
+  background:linear-gradient(135deg,#1a1235,#0f0d2a);
+  border:1px solid rgba(99,102,241,.25);border-radius:12px;
+  padding:2.2rem;display:flex;align-items:center;justify-content:space-between;
+  gap:2rem;flex-wrap:wrap;margin:0 2rem;position:relative;z-index:1;overflow:hidden;
+}
+.discord-banner::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 60% 80% at 80% 50%,rgba(99,102,241,.08),transparent);
+  pointer-events:none;
+}
+.discord-text h3{font-family:'Source Code Pro',monospace;font-size:1.2rem;font-weight:900;margin-bottom:.45rem}
+.discord-text p{font-size:.8rem;color:rgba(255,255,255,.55);line-height:1.65;font-family:'Fira Code',monospace}
+.btn-discord{
+  display:inline-flex;align-items:center;gap:.55rem;
+  background:#5865F2;color:#fff;padding:.7rem 1.6rem;border-radius:8px;
+  text-decoration:none;font-size:.82rem;font-weight:700;transition:all .2s;white-space:nowrap;
+  font-family:'Fira Code',monospace;
+}
+.btn-discord:hover{background:#4752c4;transform:translateY(-2px)}
+
+/* ── FOOTER ── */
+footer{
+  background:var(--k2);border-top:1px solid var(--brd);
+  padding:3.5rem 2rem 2rem;margin-top:5rem;position:relative;z-index:1;
+}
+.footer-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:2.5fr 1fr 1fr 1fr;gap:3rem}
+@media(max-width:768px){.footer-inner{grid-template-columns:1fr 1fr}}
+@media(max-width:480px){.footer-inner{grid-template-columns:1fr}}
+.footer-logo{font-family:'Source Code Pro',monospace;font-size:1.2rem;font-weight:900;letter-spacing:2px;color:#fff;display:block;margin-bottom:.8rem}
+.footer-logo span{color:var(--p3)}
+.footer-desc{font-size:.76rem;color:var(--t2);line-height:1.7;max-width:240px;margin-bottom:1.1rem;font-family:'Fira Code',monospace}
+.footer-col h4{font-weight:700;font-size:.7rem;color:#fff;margin-bottom:1rem;text-transform:uppercase;letter-spacing:.15em;font-family:'Source Code Pro',monospace}
+.footer-col ul{list-style:none}
+.footer-col li{margin-bottom:.5rem}
+.footer-col a{color:var(--t3);text-decoration:none;font-size:.76rem;transition:color .2s;font-family:'Fira Code',monospace}
+.footer-col a::before{content:'> ';opacity:0;transition:opacity .2s}
+.footer-col a:hover{color:var(--p3)}
+.footer-col a:hover::before{opacity:1}
+.footer-bottom{
+  max-width:1200px;margin:2rem auto 0;padding-top:1.3rem;
+  border-top:1px solid var(--brd);display:flex;justify-content:space-between;
+  align-items:center;font-size:.7rem;color:var(--t3);flex-wrap:wrap;gap:.5rem;
+  font-family:'Fira Code',monospace;
+}
+.footer-badges{display:flex;gap:.5rem}
+.badge{
+  background:var(--k4);border:1px solid var(--brd);border-radius:4px;
+  padding:.2rem .6rem;font-size:.65rem;color:var(--t3);
+}
+
+/* ── TOAST ── */
+#toast{
+  position:fixed;bottom:2rem;right:2rem;
+  background:var(--k4);border:1px solid var(--p3);border-radius:8px;
+  padding:.7rem 1.3rem;font-size:.78rem;font-weight:600;color:#fff;
+  transform:translateY(80px);opacity:0;transition:all .3s;z-index:999;pointer-events:none;
+  display:flex;align-items:center;gap:.6rem;font-family:'Fira Code',monospace;
+  box-shadow:0 4px 20px rgba(139,47,255,.3);
+}
+#toast.show{transform:translateY(0);opacity:1}
+#toast::before{content:'✓ ';color:var(--green);font-weight:900}
+
+/* ── MOBILE ── */
+@media(max-width:768px){
+  nav{padding:0 1rem}
+  .nav-links{display:none}
+  .hero h1{font-size:2rem}
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════
+     SPLASH SCREEN
+══════════════════════════════════════════ -->
+<div id="splash">
+  <div class="splash-grid"></div>
+  <div class="splash-glow"></div>
+
+  <div class="splash-code">
+    <div class="splash-ghost">Ⓐ</div>
+    <div class="splash-bar">
+      <div class="dot dr"></div>
+      <div class="dot dy"></div>
+      <div class="dot dg"></div>
+      <div class="splash-bar-title">anarchy_server.py</div>
+    </div>
+    <div class="splash-body">
+      <div class="sl"><span class="ln">1</span><span class="cm"># ⚡ No rules. No limits. Pure chaos.</span></div>
+      <div class="sl"><span class="ln">2</span>&nbsp;</div>
+      <div class="sl"><span class="ln">3</span><span class="kw">import</span><span class="pl">&nbsp;chaos, freedom</span></div>
+      <div class="sl"><span class="ln">4</span><span class="kw">from</span><span class="pl">&nbsp;anarchy&nbsp;</span><span class="kw">import</span><span class="pl">&nbsp;</span><span class="cls">Server</span></div>
+      <div class="sl"><span class="ln">5</span>&nbsp;</div>
+      <div class="sl"><span class="ln">6</span><span class="op">@</span><span class="fn">no_rules</span></div>
+      <div class="sl"><span class="ln">7</span><span class="kw">class</span><span class="pl">&nbsp;</span><span class="cls">HavocMC</span><span class="pn">(</span><span class="cls">Server</span><span class="pn">):</span></div>
+      <div class="sl"><span class="ln">8</span><span class="pl">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="vr">name</span><span class="op">&nbsp;=&nbsp;</span><span class="str">"HavocMC"</span></div>
+      <div class="sl"><span class="ln">9</span><span class="pl">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="vr">rules</span><span class="op">&nbsp;=&nbsp;</span><span class="pn">[]</span><span class="cm">&nbsp;# empty by design</span></div>
+      <div class="sl"><span class="ln">10</span>&nbsp;</div>
+      <div class="sl"><span class="ln">11</span><span class="pl">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="kw">def</span><span class="pl">&nbsp;</span><span class="fn">join</span><span class="pn">(</span><span class="pl">self,&nbsp;</span><span class="vr">player</span><span class="pn">):</span></div>
+      <div class="sl"><span class="ln">12</span><span class="pl">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="kw">return</span><span class="pl">&nbsp;</span><span class="str">"Bem-vindo ao caos 🐍"</span></div>
+    </div>
+  </div>
+
+  <div class="splash-name">HAVOC<span style="color:var(--p3)">MC</span></div>
+  <div class="splash-sub">// python anarchy edition //</div>
+
+  <div class="splash-progress"><div class="splash-progress-fill"></div></div>
+  <div class="splash-loading" id="loading-text">Iniciando servidor...</div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     MAIN APP
+══════════════════════════════════════════ -->
+<div id="app">
+
+<!-- NAVBAR -->
+<nav>
+  <a href="#" class="logo">
+    <span class="logo-bracket">[</span>
+    <span class="logo-name">HAVOC<span>MC</span></span>
+    <span class="logo-bracket">]</span>
+    <span class="logo-py">🐍 py</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#categorias">categorias</a></li>
+    <li><a href="#vips">vips</a></li>
+    <li><a href="#outros">loja</a></li>
+    <li><a href="#faq">faq</a></li>
+  </ul>
+  <div class="nav-right">
+    <button class="ip-btn" onclick="copiarIP()">
+      <span class="live"></span>
+      play.havocmc.com.br
+    </button>
+    <a href="#" class="nav-discord">Discord</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <span class="hero-tag"><span class="hero-tag-comment"># </span>Loja Oficial do Servidor</span>
+  <h1>
+    <span class="def">class </span><span class="fname">HavocMC</span><span class="paren">(</span><span class="accent">Loja</span><span class="paren">):</span>
+  </h1>
+  <div class="hero-sub">
+    <span class="cm-hero"># Compre VIPs, Kits, Unbans, Gemas e muito mais.</span>
+    Entrega imediata após confirmação do pagamento. Sem regras, só poder.
+  </div>
+  <div class="hero-btns">
+    <a href="#vips" class="btn-hero">
+      <span>🐍</span> ver_vips()
+    </a>
+    <a href="#categorias" class="btn-hero-ghost">categorias[]</a>
+  </div>
+  <div class="hero-scroll">scroll_down</div>
+</section>
+
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="stats-code-label"># server_status.get_stats()</div>
+  <div class="stats-inner">
+    <div class="stat"><div class="stat-num">+5.000</div><div class="stat-lbl">players</div></div>
+    <div class="stat"><div class="stat-num">99.9%</div><div class="stat-lbl">uptime</div></div>
+    <div class="stat"><div class="stat-num">instant</div><div class="stat-lbl">delivery</div></div>
+    <div class="stat"><div class="stat-num">24/7</div><div class="stat-lbl">support</div></div>
+  </div>
+</div>
+
+<!-- CATEGORIAS -->
+<section class="section" id="categorias">
+  <span class="s-comment"># O que vendemos</span>
+  <span class="s-label">categorias[]</span>
+  <h2 class="s-title"><span class="def">def </span>get_categories<span style="color:var(--t3)">()</span></h2>
+  <p class="s-sub">Tudo que você precisa para aproveitar o HavocMC ao máximo</p>
+  <div class="cats-grid">
+    <a class="cat-card" href="#vips"><span class="cat-icon">👑</span><div class="cat-name">VIPs</div><div class="cat-desc">cargos & privilégios</div></a>
+    <a class="cat-card" href="#outros"><span class="cat-icon">🎒</span><div class="cat-name">Kits</div><div class="cat-desc">itens exclusivos</div></a>
+    <a class="cat-card" href="#outros"><span class="cat-icon">🔓</span><div class="cat-name">Unbans</div><div class="cat-desc">remover punições</div></a>
+    <a class="cat-card" href="#outros"><span class="cat-icon">💎</span><div class="cat-name">Gemas</div><div class="cat-desc">moeda premium</div></a>
+    <a class="cat-card" href="#outros"><span class="cat-icon">📦</span><div class="cat-name">Caixas</div><div class="cat-desc">recompensas raras</div></a>
+    <a class="cat-card" href="#outros"><span class="cat-icon">✨</span><div class="cat-name">Extras</div><div class="cat-desc">fly, nick & mais</div></a>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- VIPS -->
+<section class="section" id="vips">
+  <span class="s-comment"># Planos disponíveis</span>
+  <span class="s-label">vip_plans[]</span>
+  <h2 class="s-title"><span class="def">class </span>VIPs<span style="color:var(--t3)">(Exclusive)</span></h2>
+  <p class="s-sub">Escolha seu plano e tenha vantagens exclusivas. Pagamento via Pix à vista.</p>
+  <div class="vips-grid">
+
+    <!-- VIP -->
+    <div class="vip-card">
+      <div class="vip-glow"></div>
+      <div class="vip-header">
+        <div class="vip-class-label"># nível básico</div>
+        <span class="vip-emoji">⚔️</span>
+        <div class="vip-nome">VIP</div>
+        <div class="vip-nivel">Nível I</div>
+      </div>
+      <div class="vip-body">
+        <ul class="beneficios">
+          <li><span class="chk">›</span>Prefix [VIP] no chat</li>
+          <li><span class="chk">›</span>2 homes extras</li>
+          <li><span class="chk">›</span>Kit VIP (recarga 7d)</li>
+          <li><span class="chk">›</span>/fly no lobby</li>
+          <li><span class="chk">›</span>50 Gemas mensais</li>
+        </ul>
+        <div>
+          <div class="preco-area">
+            <div class="preco"><sup>R$</sup> 9<span>,90<small style="font-size:.65rem;color:var(--t3)">/mês</small></span></div>
+            <div><span class="pix-pill">⚡ Pix à vista</span></div>
+          </div>
+          <button class="btn-buy" onclick="comprar('VIP — R$ 9,90')">comprar_agora()</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MVP -->
+    <div class="vip-card popular">
+      <div class="vip-glow"></div>
+      <span class="pop-badge">⭐ popular</span>
+      <div class="vip-header">
+        <div class="vip-class-label"># mais vendido</div>
+        <span class="vip-emoji">🌟</span>
+        <div class="vip-nome">MVP</div>
+        <div class="vip-nivel">Nível II</div>
+      </div>
+      <div class="vip-body">
+        <ul class="beneficios">
+          <li><span class="chk">›</span>Prefix [MVP] colorido</li>
+          <li><span class="chk">›</span>4 homes extras</li>
+          <li><span class="chk">›</span>Kit MVP (recarga 5d)</li>
+          <li><span class="chk">›</span>/fly em todos os mundos</li>
+          <li><span class="chk">›</span>150 Gemas mensais</li>
+          <li><span class="chk">›</span>Nick personalizado</li>
+        </ul>
+        <div>
+          <div class="preco-area">
+            <div class="preco"><sup>R$</sup> 18<span>,90<small style="font-size:.65rem;color:var(--t3)">/mês</small></span></div>
+            <div><span class="pix-pill">⚡ Pix à vista</span></div>
+          </div>
+          <button class="btn-buy" onclick="comprar('MVP — R$ 18,90')">comprar_agora()</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRO -->
+    <div class="vip-card">
+      <div class="vip-glow"></div>
+      <div class="vip-header">
+        <div class="vip-class-label"># nível avançado</div>
+        <span class="vip-emoji">🔥</span>
+        <div class="vip-nome">PRO</div>
+        <div class="vip-nivel">Nível III</div>
+      </div>
+      <div class="vip-body">
+        <ul class="beneficios">
+          <li><span class="chk">›</span>Prefix [PRO] exclusivo</li>
+          <li><span class="chk">›</span>6 homes extras</li>
+          <li><span class="chk">›</span>Kit Pro (recarga 3d)</li>
+          <li><span class="chk">›</span>/fly + /speed</li>
+          <li><span class="chk">›</span>250 Gemas mensais</li>
+          <li><span class="chk">›</span>Nick personalizado</li>
+        </ul>
+        <div>
+          <div class="preco-area">
+            <div class="preco"><sup>R$</sup> 32<span>,90<small style="font-size:.65rem;color:var(--t3)">/mês</small></span></div>
+            <div><span class="pix-pill">⚡ Pix à vista</span></div>
+          </div>
+          <button class="btn-buy" onclick="comprar('PRO — R$ 32,90')">comprar_agora()</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ELITE -->
+    <div class="vip-card">
+      <div class="vip-glow"></div>
+      <div class="vip-header">
+        <div class="vip-class-label"># elite tier</div>
+        <span class="vip-emoji">💜</span>
+        <div class="vip-nome">ELITE</div>
+        <div class="vip-nivel">Nível IV</div>
+      </div>
+      <div class="vip-body">
+        <ul class="beneficios">
+          <li><span class="chk">›</span>Prefix [ELITE] animado</li>
+          <li><span class="chk">›</span>10 homes extras</li>
+          <li><span class="chk">›</span>Kit Elite (recarga 2d)</li>
+          <li><span class="chk">›</span>/fly + /speed + /god</li>
+          <li><span class="chk">›</span>400 Gemas mensais</li>
+          <li><span class="chk">›</span>Nick + Partícula exclusiva</li>
+        </ul>
+        <div>
+          <div class="preco-area">
+            <div class="preco"><sup>R$</sup> 52<span>,80<small style="font-size:.65rem;color:var(--t3)">/mês</small></span></div>
+            <div><span class="pix-pill">⚡ Pix à vista</span></div>
+          </div>
+          <button class="btn-buy" onclick="comprar('ELITE — R$ 52,80')">comprar_agora()</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- LENDÁRIO -->
+    <div class="vip-card">
+      <div class="vip-glow"></div>
+      <div class="vip-header">
+        <div class="vip-class-label"># lendário tier</div>
+        <span class="vip-emoji">🌌</span>
+        <div class="vip-nome">LENDÁRIO</div>
+        <div class="vip-nivel">Nível V</div>
+      </div>
+      <div class="vip-body">
+        <ul class="beneficios">
+          <li><span class="chk">›</span>Prefix [LENDÁRIO] raro</li>
+          <li><span class="chk">›</span>Homes ilimitados</li>
+          <li><span class="chk">›</span>Kit Lendário (recarga 1d)</li>
+          <li><span class="chk">›</span>Todos os comandos acima</li>
+          <li><span class="chk">›</span>700 Gemas mensais</li>
+          <li><span class="chk">›</span>Acesso antecipado a eventos</li>
+        </ul>
+        <div>
+          <div class="preco-area">
+            <div class="preco"><sup>R$</sup> 89<span>,90<small style="font-size:.65rem;color:var(--t3)">/mês</small></span></div>
+            <div><span class="pix-pill">⚡ Pix à vista</span></div>
+          </div>
+          <button class="btn-buy" onclick="comprar('LENDÁRIO — R$ 89,90')">comprar_agora()</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SUPREMO -->
+    <div class="vip-card">
+      <div class="vip-glow"></div>
+      <div class="vip-header">
+        <div class="vip-class-label"># topo absoluto</div>
+        <span class="vip-emoji">👁️</span>
+        <div class="vip-nome">SUPREMO</div>
+        <div class="vip-nivel">Nível VI — Topo</div>
+      </div>
+      <div class="vip-body">
+        <ul class="beneficios">
+          <li><span class="chk">›</span>Prefix [SUPREMO] único</li>
+          <li><span class="chk">›</span>Homes ilimitados</li>
+          <li><span class="chk">›</span>Kit Supremo (diário)</li>
+          <li><span class="chk">›</span>Todos os comandos do servidor</li>
+          <li><span class="chk">›</span>1.500 Gemas mensais</li>
+          <li><span class="chk">›</span>Cargo exclusivo no Discord</li>
+        </ul>
+        <div>
+          <div class="preco-area">
+            <div class="preco"><sup>R$</sup> 145<span>,00<small style="font-size:.65rem;color:var(--t3)">/mês</small></span></div>
+            <div><span class="pix-pill">⚡ Pix à vista</span></div>
+          </div>
+          <button class="btn-buy" onclick="comprar('SUPREMO — R$ 145,00')">comprar_agora()</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- OUTROS PRODUTOS -->
+<section class="section" id="outros">
+  <span class="s-comment"># Mais produtos</span>
+  <span class="s-label">shop.items[]</span>
+  <h2 class="s-title"><span class="def">def </span>get_items<span style="color:var(--t3)">()</span></h2>
+  <p class="s-sub">Além dos VIPs, confira outros itens disponíveis no servidor</p>
+  <div class="outros-grid">
+    <div class="outro-card">
+      <div class="outro-header"><span class="outro-icon">🔓</span><div class="outro-nome">Unban</div></div>
+      <div class="outro-desc">Remova sua punição e volte a jogar imediatamente no servidor.</div>
+      <div class="outro-preco">R$ 29,90</div>
+      <button class="btn-outro" onclick="comprar('Unban')">comprar()</button>
+    </div>
+    <div class="outro-card">
+      <div class="outro-header"><span class="outro-icon">💎</span><div class="outro-nome">500 Gemas</div></div>
+      <div class="outro-desc">Pacote de 500 gemas para usar na loja do servidor.</div>
+      <div class="outro-preco">R$ 14,90</div>
+      <button class="btn-outro" onclick="comprar('500 Gemas')">comprar()</button>
+    </div>
+    <div class="outro-card">
+      <div class="outro-header"><span class="outro-icon">💎</span><div class="outro-nome">1.500 Gemas</div></div>
+      <div class="outro-desc">Pacote de 1.500 gemas com bônus extra incluído.</div>
+      <div class="outro-preco">R$ 34,90</div>
+      <button class="btn-outro" onclick="comprar('1500 Gemas')">comprar()</button>
+    </div>
+    <div class="outro-card">
+      <div class="outro-header"><span class="outro-icon">📦</span><div class="outro-nome">Caixa Rara</div></div>
+      <div class="outro-desc">Abra e ganhe itens aleatórios raros. Sorte a todos!</div>
+      <div class="outro-preco">R$ 9,90</div>
+      <button class="btn-outro" onclick="comprar('Caixa Rara')">comprar()</button>
+    </div>
+    <div class="outro-card">
+      <div class="outro-header"><span class="outro-icon">🏠</span><div class="outro-nome">+5 Homes</div></div>
+      <div class="outro-desc">Adicione 5 homes permanentes à sua conta no servidor.</div>
+      <div class="outro-preco">R$ 7,90</div>
+      <button class="btn-outro" onclick="comprar('+5 Homes')">comprar()</button>
+    </div>
+    <div class="outro-card">
+      <div class="outro-header"><span class="outro-icon">✏️</span><div class="outro-nome">Nick Colorido</div></div>
+      <div class="outro-desc">Personalize seu nome com cores e símbolos exclusivos.</div>
+      <div class="outro-preco">R$ 12,90</div>
+      <button class="btn-outro" onclick="comprar('Nick Colorido')">comprar()</button>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- INFO -->
+<section class="section" id="info">
+  <span class="s-comment"># Garantias</span>
+  <span class="s-label">trust.reasons[]</span>
+  <h2 class="s-title"><span class="def">def </span>por_que_comprar<span style="color:var(--t3)">()</span></h2>
+  <p class="s-sub">Segurança, rapidez e suporte em cada compra</p>
+  <div class="info-grid">
+    <div class="info-card">
+      <div class="info-icon-wrap">⚡</div>
+      <div>
+        <div class="info-title">Entrega Imediata</div>
+        <div class="info-text">Seus benefícios são ativados automaticamente em segundos após a confirmação do pagamento.</div>
+      </div>
+    </div>
+    <div class="info-card">
+      <div class="info-icon-wrap">🔒</div>
+      <div>
+        <div class="info-title">Compra Segura</div>
+        <div class="info-text">Pagamentos processados com criptografia de ponta a ponta. Aceitamos Pix à vista.</div>
+      </div>
+    </div>
+    <div class="info-card">
+      <div class="info-icon-wrap">🎧</div>
+      <div>
+        <div class="info-title">Suporte no Discord</div>
+        <div class="info-text">Problemas? Abra um ticket no nosso Discord e nossa equipe resolve rapidamente.</div>
+      </div>
+    </div>
+    <div class="info-card">
+      <div class="info-icon-wrap">♾️</div>
+      <div>
+        <div class="info-title">Sem Complicação</div>
+        <div class="info-text">Escolha, pague e receba. Processo simples, rápido e sem burocracia nenhuma.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DISCORD BANNER -->
+<div class="discord-banner" style="max-width:1200px;margin:0 auto 0 auto;margin:0 2rem">
+  <div class="discord-text">
+    <h3>Precisa de ajuda?</h3>
+    <p># Entre no Discord, abra um ticket em #suporte<br>e nossa equipe vai te atender o mais rápido possível.</p>
+  </div>
+  <a href="#" class="btn-discord">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057.1 18.08.11 18.1.128 18.115a19.91 19.91 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+    discord.join()
+  </a>
+</div>
+
+<div class="divider" style="margin-top:5rem"></div>
+
+<!-- FAQ -->
+<section class="section" id="faq">
+  <span class="s-comment"># Dúvidas</span>
+  <span class="s-label">faq.answers[]</span>
+  <h2 class="s-title"><span class="def">def </span>perguntas_frequentes<span style="color:var(--t3)">()</span></h2>
+  <p class="s-sub" style="margin-bottom:2.5rem">Respondemos as dúvidas mais comuns sobre a loja</p>
+  <div class="faq-list">
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">Como faço um pedido? <span class="faq-arr">▾</span></button>
+      <div class="faq-a">Escolha o produto desejado, clique em "comprar_agora()" e siga as instruções. Aceitamos Pix à vista com entrega automática logo após a confirmação.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">Quanto tempo leva para receber? <span class="faq-arr">▾</span></button>
+      <div class="faq-a">A entrega é imediata e automática. Assim que o pagamento for confirmado, você receberá os benefícios no servidor em questão de segundos.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">Os VIPs são mensais ou vitalícios? <span class="faq-arr">▾</span></button>
+      <div class="faq-a">Os VIPs são mensais. Após o vencimento, os benefícios são removidos automaticamente. Você pode renovar quando quiser para continuar aproveitando.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">Não recebi meu VIP, o que faço? <span class="faq-arr">▾</span></button>
+      <div class="faq-a">Fique tranquilo! Entre no nosso Discord e abra um ticket em #suporte com o comprovante de pagamento. Nossa equipe vai resolver o mais rápido possível.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">Posso transferir meu VIP para outro jogador? <span class="faq-arr">▾</span></button>
+      <div class="faq-a">Não é possível transferir VIPs entre contas. Os benefícios ficam vinculados ao nick informado no momento da compra.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">Como funciona o suporte? <span class="faq-arr">▾</span></button>
+      <div class="faq-a">Nosso suporte funciona via Discord. Entre no servidor, vá até o canal #suporte e abra um ticket. Nossa equipe está disponível todos os dias para te ajudar.</div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div>
+      <span class="footer-logo">HAVOC<span>MC</span></span>
+      <p class="footer-desc"># Loja oficial do HavocMC.<br>VIPs, Kits, Unbans e mais com segurança e entrega imediata.</p>
+      <a href="#" class="btn-discord" style="display:inline-flex;font-size:.75rem">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057.1 18.08.11 18.1.128 18.115a19.91 19.91 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+        Discord
+      </a>
+    </div>
+    <div class="footer-col">
+      <h4>Loja</h4>
+      <ul>
+        <li><a href="#categorias">Categorias</a></li>
+        <li><a href="#vips">VIPs</a></li>
+        <li><a href="#outros">Kits</a></li>
+        <li><a href="#outros">Gemas</a></li>
+        <li><a href="#outros">Caixas</a></li>
+        <li><a href="#outros">Unbans</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Servidor</h4>
+      <ul>
+        <li><a href="#" onclick="copiarIP()">Copiar IP</a></li>
+        <li><a href="#">Discord</a></li>
+        <li><a href="#">Regras</a></li>
+        <li><a href="#">Staff</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Legal</h4>
+      <ul>
+        <li><a href="#">Termos de Serviço</a></li>
+        <li><a href="#">Política de Reembolso</a></li>
+        <li><a href="#">Privacidade</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 HavocMC — Todos os direitos reservados.</span>
+    <div class="footer-badges">
+      <span class="badge">Não afiliado à Mojang</span>
+      <span class="badge">Pix Seguro</span>
+      <span class="badge">🐍 Python Edition</span>
+    </div>
+  </div>
+</footer>
+
+</div><!-- /#app -->
+
+<div id="toast">Copiado!</div>
+
+<script>
+/* ── PARTICLES ── */
+for(let i=0;i<20;i++){
+  const p=document.createElement('div');
+  p.className='particle';
+  p.style.cssText=`left:${Math.random()*100}vw;bottom:-4px;animation-duration:${7+Math.random()*14}s;animation-delay:${Math.random()*10}s;width:${1+Math.random()*2}px;height:${1+Math.random()*2}px`;
+  document.body.appendChild(p);
+}
+
+/* ── LOADING TEXT CYCLE ── */
+const loadMsgs=['Iniciando servidor...','import anarchy...','Carregando produtos...','Configurando ambiente...','Pronto!'];
+let li=0;
+const ltEl=document.getElementById('loading-text');
+const ltInterval=setInterval(()=>{
+  li++;
+  if(li<loadMsgs.length)ltEl.textContent=loadMsgs[li];
+  else clearInterval(ltInterval);
+},480);
+
+/* ── SPLASH → APP ── */
+setTimeout(()=>{
+  const splash=document.getElementById('splash');
+  const app=document.getElementById('app');
+  splash.classList.add('hide');
+  setTimeout(()=>{
+    splash.style.display='none';
+    app.classList.add('show');
+  },650);
+},2800);
+
+/* ── UTILS ── */
+function copiarIP(){
+  navigator.clipboard.writeText('play.havocmc.com.br').catch(()=>{});
+  showToast('IP copiado: play.havocmc.com.br');
+}
+function comprar(nome){showToast('Redirecionando: '+nome);}
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.childNodes[t.childNodes.length-1].textContent=' '+msg;
+  t.classList.add('show');
+  clearTimeout(t._timer);
+  t._timer=setTimeout(()=>t.classList.remove('show'),2800);
+}
+function toggleFaq(btn){
+  const item=btn.closest('.faq-item');
+  const isOpen=item.classList.contains('open');
+  document.querySelectorAll('.faq-item.open').forEach(el=>el.classList.remove('open'));
+  if(!isOpen)item.classList.add('open');
+}
+
+/* ── NAV SCROLL HIGHLIGHT ── */
+const sections=document.querySelectorAll('section[id]');
+window.addEventListener('scroll',()=>{
+  let current='';
+  sections.forEach(s=>{if(window.scrollY>=s.offsetTop-100)current=s.id;});
+  document.querySelectorAll('.nav-links a').forEach(a=>{
+    a.style.color=a.getAttribute('href')==='#'+current?'var(--p3)':'';
+  });
+});
+</script>
+</body>
+</html>

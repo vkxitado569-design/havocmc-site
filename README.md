@@ -1,1 +1,0 @@
-# havocmc-site
